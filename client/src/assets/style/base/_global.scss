@@ -1,0 +1,53 @@
+/* Background color */
+
+@mixin bgColors($background) {
+  background-color: $background;
+}
+
+.bg {
+  &-primary {
+    @include bgColors($color-primary)
+  }
+
+  &-red {
+    @include bgColors($color-red)
+  }
+
+  &-normal {
+    @include bgColors($color-normal)
+  }
+
+  &-purple {
+    @include bgColors($color-purple)
+  }
+
+  &-pink {
+    @include bgColors($color-pink)
+  }
+}
+
+
+/* Layout */
+
+//.mg-row {
+//  width: 100%;
+//  position: relative;
+//  box-sizing: border-box;
+//  display: flex;
+//
+//  .col {
+//    @for $i from 1 through 10 {
+//      &-#{$i} {
+//        width: calc(100% * (0.1 * #{$i}));
+//        margin-right: 10px;
+//        box-sizing: border-box;
+//        &:last-child {
+//          margin-right: 0;
+//        }
+//      }
+//    }
+//  }
+//
+//}
+
+
