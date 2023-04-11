@@ -27,13 +27,9 @@
 2. client安装启动 **客户端操作口令：amdin**
 
 ```js
-cd
-client
-npm
-i
-npm
-run
-serve
+cd client
+npm i
+npm run serve
 ```
 
 3. server安装启动
@@ -43,12 +39,9 @@ serve
 - 找到 `server/config/index.js` 配置数据库
 
 ```js
-cd
-server
-npm
-i
-nodemon
-app
+cd server
+npm i
+nodemon app
 ```
 
 4. 测试功能
