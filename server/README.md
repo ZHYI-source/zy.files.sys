@@ -83,7 +83,7 @@ git clone https://gitee.com/Z568_568/zy-express-sequelize-mysql.git
 ```sh
 npm install
 ```
-3.打开 `Navicat软件` 创建数据库  `mk_db`,运行`sql文件`
+3.打开 `Navicat软件` 创建数据库  `mk_open`,运行`sql文件`
 
 4.配置数据库信息 `文件 config/index - DATABASE`
 
@@ -91,7 +91,7 @@ npm install
     HOST: "localhost",
     USER: "root",
     PASSWORD: "root",
-    DB: "mk_db",
+    DB: "mk_open",
     dialect: "mysql",
     pool: {
         max: 5,

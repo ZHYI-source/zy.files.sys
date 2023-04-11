@@ -293,7 +293,7 @@ export default {
       window.open(data.preUrl, '_blank')
     },
     verKL(val) {
-      return val === 'zhouyi'
+      return val === 'admin'
     },
     goDelete(data) {
       let that = this

@@ -2,6 +2,9 @@
   <section id="mg-footer">
     <ul class="icons">
       <li title="Github">
+        <span style="font-size: 15px"  @click="handleLink('https://gitee.com/Z568_568/zy.files.sys.git')">源码</span>
+      </li>
+      <li title="Github">
         <MgIcon name="fa-brands fa-github" @click="handleLink('https://github.com/ZHYI-source')"/>
       </li>
       <li title="码云">
