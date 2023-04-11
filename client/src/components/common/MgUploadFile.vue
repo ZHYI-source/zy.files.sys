@@ -5,27 +5,16 @@
       drag
       :action="action"
       :show-file-list="false"
-      :on-preview="handlePreview"
-      :on-remove="handleRemove"
       :on-success="handleSuccess"
       :before-upload="beforeUpload"
-      :before-remove="beforeRemove"
       :headers=headers
       v-loading="loading"
       multiple
-      :on-exceed="handleExceed"
-      :file-list="fileList">
-      <!--      <i class="el-icon-upload"></i>-->
+    >
       <img class="upload-logo" src="../../assets/logo.png"/>
       <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
       <div class="el-upload__tip" slot="tip">✈ 各类文件均可上传,支持多图上传</div>
     </el-upload>
-    <!--    <el-image-->
-    <!--      v-if="tempImg"-->
-    <!--      style="width: 100px; height: 100px;border-radius: 5px"-->
-    <!--      :src="tempImg"-->
-    <!--      :preview-src-list="[tempImg]"-->
-    <!--      fit="fit"></el-image>-->
   </section>
 </template>
 
@@ -84,34 +73,18 @@ export default {
     },
     handleSuccess(res, file) {
       this.loading = false
-      // this.tempImg = res.data.url
       this.$emit('handleSuccess', true)
-      // this.$toast.success(res.meta.msg)
-
       this.$notify({
         title: res.data.errFiles.length ? '失败' : '成功',
         message: res.meta.msg,
         type: res.data.errFiles.length ? 'error' : 'success'
       });
     },
-    handleRemove(file, fileList) {
-      console.log(file, fileList);
-    },
-    handlePreview(file) {
-      console.log(file);
-    },
-    handleExceed(files, fileList) {
-      this.$message.warning(`当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
-    },
-    beforeRemove(file, fileList) {
-      return this.$confirm(`确定移除 ${file.name}？`);
-    }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-
 .upload-logo {
   display: inline-block;
   width: 80px;

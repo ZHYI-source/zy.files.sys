@@ -1,13 +1,14 @@
 <template>
   <div class="home">
     <el-row>
-      <div class="up-box">
-        <MkUploadFile @handleSuccess="goPage(1)"/>
+      <div class="up-box" ref="up-box">
+        <canvas id="particleCanvas"></canvas>
+        <MkUploadFile class="up-at" v-if="showUploadBox" @handleSuccess="goPage(1)"/>
+        <el-button class="up-none" v-if="!showUploadBox" @click="goU">上传文件</el-button>
       </div>
     </el-row>
     <el-divider></el-divider>
     <section class="tb-pan">
-
       <el-row style="padding-bottom: 15px">
         <el-form :model="query" ref="ruleForm" label-width="10px" class="demo-ruleForm">
           <el-row style="display: flex">
@@ -116,7 +117,6 @@
         :total="temp.dataSize">
       </el-pagination>
     </section>
-
     <el-dialog width="320px" title="文件下载地址分享码" :visible.sync="dialogTableVisible"
                @close="()=>{this.dialogTableVisible=false}">
       <div style="display: flex;justify-content: center">
@@ -142,6 +142,7 @@ export default {
     return {
       tableData: [],
       loading: false,
+      showUploadBox: false,
       dialogTableVisible: false,
       codeUrl: '',
       //查询条件
@@ -162,6 +163,7 @@ export default {
       updataKey: 0,
       heightL: 580,
       tableHeight: 580,
+
     }
   },
   watch: {
@@ -169,11 +171,14 @@ export default {
       this.updataKey += 1
       this.tableHeight = val
     },
+
   },
   created() {
     this.getDataList()
+    this.showUploadBox = localStorage.getItem('zy_files_key')
   },
   mounted() {
+    this.init()
     this.getWinHeight()
   },
   methods: {
@@ -186,24 +191,110 @@ export default {
         that.heightL = window.innerHeight - 430
       })
     },
-    goUpdate(data) {
+    //初始化cavans粒子
+    init() {
+      const canvas = document.getElementById("particleCanvas");
+      const ctx = canvas.getContext("2d");
+      canvas.width = this.$refs["up-box"].clientWidth
+      canvas.height = this.$refs["up-box"].clientHeight;
+
+      class Particle {
+        constructor(x, y, size, color, speedX, speedY) {
+          this.x = x;
+          this.y = y;
+          this.size = size;
+          this.color = color;
+          this.speedX = speedX;
+          this.speedY = speedY;
+        }
+
+        update() {
+          this.x += this.speedX;
+          this.y += this.speedY;
+
+          if (this.size > 0.2) this.size -= 0.1;
+        }
+
+        draw() {
+          ctx.fillStyle = this.color;
+          ctx.strokeStyle = this.color;
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+          ctx.closePath();
+          ctx.fill();
+          ctx.stroke();
+        }
+      }
+
+      let particles = [];
+
+      function createParticle(e) {
+        const xPos = e.x;
+        const yPos = e.y;
+        const size = Math.random() * 5 + 1;
+        const color = '#' + ('00000' + (Math.random() * 0x1000000 << 0).toString(16)).substr(-6);
+        const speedX = Math.random() * 3 - 1.5;
+        const speedY = Math.random() * 3 - 1.5;
+
+        const particle = new Particle(xPos, yPos, size, color, speedX, speedY);
+        particles.push(particle);
+      }
+
+      function animateParticles() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        for (let i = 0; i < particles.length; i++) {
+          particles[i].update();
+          particles[i].draw();
+
+          if (particles[i].size <= 0.2) {
+            particles.splice(i, 1);
+            i--;
+          }
+        }
+        requestAnimationFrame(animateParticles);
+      }
+
+      canvas.addEventListener("mousemove", createParticle);
+      animateParticles();
+    },
+
+    checkOrder() {
       let that = this
-      this.$prompt('请输入口令', '提示', {
+      return this.$prompt('请输入口令', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         inputValidator: that.verKL,
         inputErrorMessage: '口令不正确'
       }).then(({value}) => {
-        dirFilesUpdate(data).then(res => {
-          that.$message({
-            type: 'success',
-            message: '编辑成功!'
-          });
-          that.getDataList()
-        })
+        localStorage.setItem('zy_files_key', 'ok')
+        that.showUploadBox = true
+        return true
       }).catch(() => {
-
+        return false
       });
+    },
+
+    goU: async function () {
+      this.showUploadBox = await this.checkOrder()
+    },
+
+    goUpdate: async function (data) {
+      let that = this
+      let isPass = false
+      if (this.showUploadBox) {
+        isPass = true
+      } else {
+        isPass = await this.checkOrder()
+      }
+      isPass && dirFilesUpdate(data).then(res => {
+        that.$message({
+          type: 'success',
+          message: '编辑成功!'
+        });
+        that.getDataList()
+      })
 
 
     },
@@ -295,28 +386,23 @@ export default {
     verKL(val) {
       return val === 'admin'
     },
-    goDelete(data) {
+    goDelete: async function (data) {
       let that = this
-      this.$prompt('请输入口令', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        inputValidator: that.verKL,
-        inputErrorMessage: '口令不正确'
-      }).then(({value}) => {
-        dirFilesDelete({id: data.id, name: data.name}).then(res => {
-          that.$message({
-            type: 'success',
-            message: '删除成功!'
-          });
-          that.getDataList()
-        }).catch(err => {
-          console.log(err)
-        })
-      }).catch(() => {
-
-      });
-
-
+      let isPass = false
+      if (this.showUploadBox) {
+        isPass = true
+      } else {
+        isPass = await this.checkOrder()
+      }
+      isPass && dirFilesDelete({id: data.id, name: data.name}).then(res => {
+        that.$message({
+          type: 'success',
+          message: '删除成功!'
+        });
+        that.getDataList()
+      }).catch(err => {
+        console.log(err)
+      })
     },
   }
 }
@@ -333,7 +419,23 @@ export default {
 .up-box {
   display: flex;
   justify-content: center;
-  padding: 15px 0;
+  position: relative;
+  height: 270px;
+
+  .up-at {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    padding: 15px;
+    background-color: #fff;
+    border-radius: 15px;
+  }
+
+  .up-none {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+  }
 }
 
 .pag {

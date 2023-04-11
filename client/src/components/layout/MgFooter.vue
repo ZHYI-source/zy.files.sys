@@ -1,8 +1,8 @@
 <template>
   <section id="mg-footer">
     <ul class="icons">
-      <li title="Github">
-        <span style="font-size: 15px"  @click="handleLink('https://gitee.com/Z568_568/zy.files.sys.git')">源码</span>
+      <li   title="源码">
+        <MgIcon name="fa-globe"  @click="handleLink('https://gitee.com/Z568_568/zy.files.sys.git')"/>
       </li>
       <li title="Github">
         <MgIcon name="fa-brands fa-github" @click="handleLink('https://github.com/ZHYI-source')"/>
