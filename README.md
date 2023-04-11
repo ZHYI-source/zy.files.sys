@@ -5,6 +5,8 @@
 ---
 🎉开源轻量级个人文件管理、图床管理服务系统，对文本文件、图片、视频、音频、音乐等各类文件的存储管理支持多图上传等功能，基于node.js、mysql、vue2实现。内置用户登录和其他相关接口可扩展功能
 
+[🌍项目源码](https://gitee.com/Z568_568/zy.files.sys.git)
+
 [🌍在线预览demo：http://files.zhouyi.run/#/](http://files.zhouyi.run/#/)
 
 #### 项目截图
