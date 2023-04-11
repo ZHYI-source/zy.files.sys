@@ -31,6 +31,7 @@ npm run serve
 3.  server安装启动
  - 新建数据库 `mg_open`
  - 找到 `server/sql/mg_open.sql` 并且运行sql文件
+ - 找到 `server/config/index.js` 配置数据库
 ```js
 cd server
 npm i
