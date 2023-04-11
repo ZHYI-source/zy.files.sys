@@ -20,7 +20,7 @@
     
 `git clone https://gitee.com/Z568_568/zy.files.sys.git`
 
-2.  client安装启动
+2.  client安装启动 **客户端操作口令：amdin**
 
 ```js
 cd client
